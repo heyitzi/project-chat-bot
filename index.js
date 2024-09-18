@@ -8,6 +8,7 @@ const path = require("node:path");
 // Require the necessary discord.js classes
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
+const { OpenAI } = require("openai");
 
 // Create a new client instance
 const client = new Client({
@@ -60,6 +61,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const command = interaction.client.commands.get(interaction.commandName);
+  const chatCompletion = await client.chat.completions.create({
+    messages: [{ role: "user", content: "Say this is a test" }],
+    model: "gpt-3.5-turbo",
+  });
 
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`);
@@ -82,4 +87,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
   }
+});
+
+const openai = new OpenAI({
+  apiKey: "openAiKey",
 });
